@@ -13,6 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.util.Log;
+import org.jeromq.*;
 
 public class MainActivity extends FragmentActivity implements
 		ActionBar.TabListener {
@@ -27,7 +29,11 @@ public class MainActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		Log.i("ZMQ", ZMQ.getVersionString());
+		
+		TextView t = (TextView)findViewById(R.id.textView1);
+		t.setText("ZeroMQ " + ZMQ.getVersionString());
+		
 		// Set up the action bar to show tabs.
 		final ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
