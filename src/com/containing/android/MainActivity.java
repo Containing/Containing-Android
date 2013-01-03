@@ -2,6 +2,7 @@ package com.containing.android;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -12,9 +13,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.util.Log;
 import org.jeromq.*;
+import org.achartengine.*;
+
+import com.containing.graph.LineGraph;
 
 public class MainActivity extends FragmentActivity implements
 		ActionBar.TabListener {
@@ -120,5 +125,13 @@ public class MainActivity extends FragmentActivity implements
 			return textView;
 		}
 	}
-
+	
+	public void foobar(View view) {
+		LineGraph graph = new LineGraph();
+		View gView = graph.getView(this);
+		
+		LinearLayout layout = (LinearLayout) findViewById(R.id.chart);
+		layout.addView(gView);
+		
+	}
 }
