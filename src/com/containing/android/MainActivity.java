@@ -20,6 +20,7 @@ import org.jeromq.*;
 import org.achartengine.*;
 
 import com.containing.graph.LineGraph;
+import com.containing.graph.PieGraph;
 
 public class MainActivity extends FragmentActivity implements
 		ActionBar.TabListener {
@@ -54,7 +55,8 @@ public class MainActivity extends FragmentActivity implements
 		LinearLayout layout = (LinearLayout) findViewById(R.id.chartContainersInOut);
 		layout.addView(gView);
 		layout = (LinearLayout) findViewById(R.id.chartContainersStorageArea);
-		layout.addView(graph.getView(this));
+		PieGraph pgraph = new PieGraph();
+		layout.addView(pgraph.getView(this));
 		layout = (LinearLayout) findViewById(R.id.chartVehiclesAvailability);
 		layout.addView(graph.getView(this));
 	}
