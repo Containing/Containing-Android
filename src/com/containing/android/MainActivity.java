@@ -19,6 +19,7 @@ import android.util.Log;
 import org.jeromq.*;
 import org.achartengine.*;
 
+import com.containing.graph.BarGraph;
 import com.containing.graph.LineGraph;
 import com.containing.graph.PieGraph;
 
@@ -57,8 +58,9 @@ public class MainActivity extends FragmentActivity implements
 		layout = (LinearLayout) findViewById(R.id.chartContainersStorageArea);
 		PieGraph pgraph = new PieGraph();
 		layout.addView(pgraph.getView(this));
+		BarGraph bgraph = new BarGraph();
 		layout = (LinearLayout) findViewById(R.id.chartVehiclesAvailability);
-		layout.addView(graph.getView(this));
+		layout.addView(bgraph.getView(this));
 	}
 
 	@Override
