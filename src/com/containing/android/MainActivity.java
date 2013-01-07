@@ -36,9 +36,6 @@ public class MainActivity extends FragmentActivity implements
 		setContentView(R.layout.activity_main);
 		Log.i("ZMQ", ZMQ.getVersionString());
 		
-		TextView t = (TextView)findViewById(R.id.textView1);
-		t.setText("ZeroMQ " + ZMQ.getVersionString());
-		
 		// Set up the action bar to show tabs.
 		final ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -50,6 +47,16 @@ public class MainActivity extends FragmentActivity implements
 				.setTabListener(this));
 		actionBar.addTab(actionBar.newTab().setText(R.string.title_section3)
 				.setTabListener(this));
+		
+		LineGraph graph = new LineGraph();
+		View gView = graph.getView(this);
+		
+		LinearLayout layout = (LinearLayout) findViewById(R.id.chartContainersInOut);
+		layout.addView(gView);
+		layout = (LinearLayout) findViewById(R.id.chartContainersStorageArea);
+		layout.addView(graph.getView(this));
+		layout = (LinearLayout) findViewById(R.id.chartVehiclesAvailability);
+		layout.addView(graph.getView(this));
 	}
 
 	@Override
@@ -124,14 +131,5 @@ public class MainActivity extends FragmentActivity implements
 					ARG_SECTION_NUMBER)));
 			return textView;
 		}
-	}
-	
-	public void foobar(View view) {
-		LineGraph graph = new LineGraph();
-		View gView = graph.getView(this);
-		
-		LinearLayout layout = (LinearLayout) findViewById(R.id.chart);
-		layout.addView(gView);
-		
 	}
 }

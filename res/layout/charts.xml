@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- <ScrollView android:layout_width="fill_parent" android:layout_height="fill_parent"  xmlns:android="http://schemas.android.com/apk/res/android"> -->
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:id="@+id/chartsLayout"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="horizontal"
+	    android:paddingLeft="16dp"
+	    android:paddingRight="16dp"
+	    android:paddingTop="16dp"
+	    android:weightSum="1.0"
+	    android:scrollbars="vertical"
+	    android:baselineAligned="false">
+        
+
+    
+        <LinearLayout
+            android:id="@+id/firstCol"
+            android:layout_width="0dp"
+            android:layout_weight=".33"
+            android:layout_height="fill_parent"
+            android:scrollbars="vertical"
+            android:orientation="vertical"
+            android:paddingRight="16dp">
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Containers"
+                android:layout_marginBottom="8dp"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+		    <LinearLayout
+		        android:id="@+id/chartContainersInOut"
+		        android:layout_width="fill_parent"
+		        android:layout_height="180dp"
+		        android:orientation="horizontal"
+		        android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Incoming/Outgoing"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:layout_marginBottom="16dp" />
+
+            <LinearLayout
+                android:id="@+id/chartContainersStorageArea"
+                android:layout_width="fill_parent"
+                android:layout_height="180dp"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Storage Areas"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+        </LinearLayout>
+                        
+
+        <LinearLayout
+            android:id="@+id/secondCol"
+            android:layout_width="0dp"
+            android:layout_weight=".33"
+            android:layout_height="fill_parent"
+            android:scrollbars="vertical"
+            android:orientation="vertical"
+            android:paddingRight="16dp">
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Vehicles"
+                android:layout_marginBottom="8dp"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+            
+            <LinearLayout
+                android:id="@+id/chartVehiclesAvailability"
+                android:layout_width="fill_parent"
+                android:layout_height="180dp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Availability"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:layout_marginBottom="16dp" />
+        </LinearLayout>
+        
+        <LinearLayout
+            android:id="@+id/thirdCol"
+            android:layout_width="0dp"
+            android:layout_weight=".33"
+            android:layout_height="fill_parent"
+            android:scrollbars="vertical"
+            android:orientation="vertical"
+            android:paddingRight="16dp">
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Other"
+                android:layout_marginBottom="8dp"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-none-"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:layout_marginBottom="16dp" />
+        </LinearLayout>  
+    </LinearLayout>
+<!-- </ScrollView>    -->
