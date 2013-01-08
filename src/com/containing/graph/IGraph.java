@@ -11,7 +11,7 @@ import org.achartengine.GraphicalView;
 public interface IGraph {
 	
 	/**
-	 * Returns generated graph as a View
+	 * Returns generated graph as a GraphicalView
 	 * @param context
 	 * @return GraphicalView
 	 */
