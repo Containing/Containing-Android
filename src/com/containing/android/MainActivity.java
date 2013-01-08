@@ -26,6 +26,7 @@ import com.containing.graph.BarGraph;
 import com.containing.graph.ContainersIncomingOutgoingGraph;
 import com.containing.graph.LineGraph;
 import com.containing.graph.PieGraph;
+import com.containing.graph.StorageAreaGraph;
 
 public class MainActivity extends FragmentActivity implements
 		ActionBar.TabListener {
@@ -37,7 +38,9 @@ public class MainActivity extends FragmentActivity implements
 	private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 	
 	private ContainersIncomingOutgoingGraph graphContainersInOut = new ContainersIncomingOutgoingGraph();
+	private StorageAreaGraph graphStorageArea = new StorageAreaGraph();
 	private GraphicalView graphContainersInOutView;
+	private GraphicalView graphStorageAreaView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,13 +60,14 @@ public class MainActivity extends FragmentActivity implements
 		actionBar.addTab(actionBar.newTab().setText(R.string.title_section3)
 				.setTabListener(this));
 		
-		graphContainersInOut = new ContainersIncomingOutgoingGraph();
 		graphContainersInOutView = graphContainersInOut.getView(this);
+		graphStorageAreaView = graphStorageArea.getView(this);
 		
 		LinearLayout layout = (LinearLayout) findViewById(R.id.chartContainersInOut);
 		layout.addView(graphContainersInOutView);
 
-		// layout = (LinearLayout) findViewById(R.id.chartContainersStorageArea);
+		layout = (LinearLayout) findViewById(R.id.chartContainersStorageArea);
+		layout.addView(graphStorageAreaView);
 		// layout = (LinearLayout) findViewById(R.id.chartVehiclesAvailability);
 
 		Thread thread = new Thread() {
@@ -80,6 +84,16 @@ public class MainActivity extends FragmentActivity implements
 					graphContainersInOut.addNewPoint(new Date((long)1357654232 + i), rnd.nextInt(50000), ContainersIncomingOutgoingGraph.LINE.INCOMING);
 					graphContainersInOut.addNewPoint(new Date((long)1357654232 + i), rnd.nextInt(10000), ContainersIncomingOutgoingGraph.LINE.OUTGOING);
 					graphContainersInOutView.repaint();
+
+					String[] areas = {"Foo", "Bar", "Baz", "Foobar", "BarBaz"};
+					int[] areasv = {rnd.nextInt(50),rnd.nextInt(50),rnd.nextInt(50),rnd.nextInt(50),rnd.nextInt(50)};
+					try {
+						graphStorageArea.addAreas(areas, areasv);
+					}
+					catch(Exception e) {
+						e.printStackTrace();
+					}
+					graphStorageAreaView.repaint();
 				}
 			}
 		};
