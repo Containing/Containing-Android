@@ -22,7 +22,7 @@ import android.graphics.Color;
 public class ContainersIncomingOutgoingGraph implements IGraph {
 
 	public enum LINE { INCOMING, OUTGOING };
-	private int maxItems = 200;
+	private int maxItems = 10;
 	
 	private GraphicalView view;
 	private TimeSeries incoming = new TimeSeries("Incoming");
