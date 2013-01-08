@@ -124,15 +124,12 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public void onTabSelected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
-		// When the given tab is selected, show the tab contents in the
-		// container view.
-		Fragment fragment = new DummySectionFragment();
-		Bundle args = new Bundle();
-		args.putInt(DummySectionFragment.ARG_SECTION_NUMBER,
-				tab.getPosition() + 1);
-		fragment.setArguments(args);
-		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.container, fragment).commit();
+	
+		LinearLayout layout = (LinearLayout) findViewById(R.id.chartsLayout);
+		if(tab.getPosition() == 1)
+			layout.setVisibility(LinearLayout.GONE);
+		else
+			layout.setVisibility(LinearLayout.VISIBLE);
 	}
 
 	@Override
