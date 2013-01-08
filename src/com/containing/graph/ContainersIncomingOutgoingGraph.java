@@ -53,7 +53,7 @@ public class ContainersIncomingOutgoingGraph implements IGraph {
 		mRenderer.addSeriesRenderer(rendererIncoming);
 		mRenderer.addSeriesRenderer(rendererOutgoing);
 		mRenderer.setZoomEnabled(false);
-		mRenderer.setZoomButtonsVisible(true);
+		//mRenderer.setZoomButtonsVisible(true);
 	}
 	
 	/**
