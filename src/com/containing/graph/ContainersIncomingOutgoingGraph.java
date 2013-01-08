@@ -52,7 +52,6 @@ public class ContainersIncomingOutgoingGraph implements IGraph {
 		mRenderer.setYTitle("Count");
 		mRenderer.addSeriesRenderer(rendererIncoming);
 		mRenderer.addSeriesRenderer(rendererOutgoing);
-		//mRenderer.setInScroll(true);
 		mRenderer.setZoomEnabled(false);
 		mRenderer.setZoomButtonsVisible(true);
 	}
