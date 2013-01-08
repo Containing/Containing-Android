@@ -75,10 +75,10 @@ public class MainActivity extends FragmentActivity implements
 						//Thread.sleep(200);
 					}
 					catch(Exception e) {
-						Log.i("OOOI!", e.getMessage());
+						e.printStackTrace();
 					}
-					graphContainersInOut.addNewPoint(new Date((long)1357654232 + i), rnd.nextInt(5000), ContainersIncomingOutgoingGraph.LINE.INCOMING);
-					graphContainersInOut.addNewPoint(new Date((long)1357654232 + i), rnd.nextInt(5000), ContainersIncomingOutgoingGraph.LINE.OUTGOING);
+					graphContainersInOut.addNewPoint(new Date((long)1357654232 + i), rnd.nextInt(50000), ContainersIncomingOutgoingGraph.LINE.INCOMING);
+					graphContainersInOut.addNewPoint(new Date((long)1357654232 + i), rnd.nextInt(10000), ContainersIncomingOutgoingGraph.LINE.OUTGOING);
 					graphContainersInOutView.repaint();
 				}
 			}
