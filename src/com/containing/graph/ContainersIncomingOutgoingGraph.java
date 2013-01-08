@@ -12,7 +12,6 @@ import org.achartengine.renderer.XYSeriesRenderer;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.view.View;
 
 /**
  * Linegraph representing incoming and outgoing containers
@@ -20,7 +19,7 @@ import android.view.View;
  * @author Christiaan
  *
  */
-public class ContainersIncomingOutgoingGraph {
+public class ContainersIncomingOutgoingGraph implements IGraph {
 
 	public enum LINE { INCOMING, OUTGOING };
 	private int maxItems = 200;
@@ -63,6 +62,7 @@ public class ContainersIncomingOutgoingGraph {
 	 * @param context
 	 * @return GraphicalView
 	 */
+	@Override
 	public GraphicalView getView(Context context) {
 		view = ChartFactory.getTimeChartView(context, mDataset, mRenderer, "H:mm:ss");
 		return view;
