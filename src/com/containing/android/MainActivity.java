@@ -1,6 +1,7 @@
 package com.containing.android;
 
 import java.util.Date;
+import java.util.Random;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
@@ -35,8 +36,8 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 	
-	private ContainersIncomingOutgoingGraph graph2 = new ContainersIncomingOutgoingGraph();
-	private GraphicalView graph2View;
+	private ContainersIncomingOutgoingGraph graphContainersInOut = new ContainersIncomingOutgoingGraph();
+	private GraphicalView graphContainersInOutView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,31 +57,18 @@ public class MainActivity extends FragmentActivity implements
 		actionBar.addTab(actionBar.newTab().setText(R.string.title_section3)
 				.setTabListener(this));
 		
-		LineGraph graph = new LineGraph();
-		View gView = graph.getView(this);
+		graphContainersInOut = new ContainersIncomingOutgoingGraph();
+		graphContainersInOutView = graphContainersInOut.getView(this);
 		
 		LinearLayout layout = (LinearLayout) findViewById(R.id.chartContainersInOut);
-		layout.addView(gView);
-		layout = (LinearLayout) findViewById(R.id.chartContainersStorageArea);
-		PieGraph pgraph = new PieGraph();
-		layout.addView(pgraph.getView(this));
-		BarGraph bgraph = new BarGraph();
-		layout = (LinearLayout) findViewById(R.id.chartVehiclesAvailability);
-		//layout.addView(bgraph.getView(this));
-		
-		
-		/*
-		for(int i = 0; i < 1000; i += 100) {
-			graph2.addNewPoint(new Date(10000 + i), 10 + i / 10, ContainersIncomingOutgoingGraph.LINE.INCOMING);
-			graph2.addNewPoint(new Date(10000 + i), 40 + i / 10, ContainersIncomingOutgoingGraph.LINE.OUTGOING);
-		}
-		*/
-		graph2View = graph2.getView(this);
-		layout.addView(graph2View);
-		//layout.addView(graph2.getView(this));
-		
+		layout.addView(graphContainersInOutView);
+
+		// layout = (LinearLayout) findViewById(R.id.chartContainersStorageArea);
+		// layout = (LinearLayout) findViewById(R.id.chartVehiclesAvailability);
+
 		Thread thread = new Thread() {
 			public void run() {
+				Random rnd = new Random();
 				for(long i = 0;; i+=3600 * 60) {
 					try {
 						Thread.sleep(2000);
@@ -89,9 +77,9 @@ public class MainActivity extends FragmentActivity implements
 					catch(Exception e) {
 						Log.i("OOOI!", e.getMessage());
 					}
-					graph2.addNewPoint(new Date((long)1357654232 + i), 25 + (int)i / (3600 * 60), ContainersIncomingOutgoingGraph.LINE.INCOMING);
-					graph2.addNewPoint(new Date((long)1357654232 + i), 10 + (int)i / (3600 * 60), ContainersIncomingOutgoingGraph.LINE.OUTGOING);
-					graph2View.repaint();
+					graphContainersInOut.addNewPoint(new Date((long)1357654232 + i), rnd.nextInt(5000), ContainersIncomingOutgoingGraph.LINE.INCOMING);
+					graphContainersInOut.addNewPoint(new Date((long)1357654232 + i), rnd.nextInt(5000), ContainersIncomingOutgoingGraph.LINE.OUTGOING);
+					graphContainersInOutView.repaint();
 				}
 			}
 		};
