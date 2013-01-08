@@ -1,5 +1,7 @@
 package com.containing.android;
 
+import java.util.Date;
+
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -20,6 +22,7 @@ import org.jeromq.*;
 import org.achartengine.*;
 
 import com.containing.graph.BarGraph;
+import com.containing.graph.ContainersIncomingOutgoingGraph;
 import com.containing.graph.LineGraph;
 import com.containing.graph.PieGraph;
 
@@ -31,6 +34,9 @@ public class MainActivity extends FragmentActivity implements
 	 * current tab position.
 	 */
 	private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
+	
+	private ContainersIncomingOutgoingGraph graph2 = new ContainersIncomingOutgoingGraph();
+	private GraphicalView graph2View;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +66,36 @@ public class MainActivity extends FragmentActivity implements
 		layout.addView(pgraph.getView(this));
 		BarGraph bgraph = new BarGraph();
 		layout = (LinearLayout) findViewById(R.id.chartVehiclesAvailability);
-		layout.addView(bgraph.getView(this));
+		//layout.addView(bgraph.getView(this));
+		
+		
+		/*
+		for(int i = 0; i < 1000; i += 100) {
+			graph2.addNewPoint(new Date(10000 + i), 10 + i / 10, ContainersIncomingOutgoingGraph.LINE.INCOMING);
+			graph2.addNewPoint(new Date(10000 + i), 40 + i / 10, ContainersIncomingOutgoingGraph.LINE.OUTGOING);
+		}
+		*/
+		graph2View = graph2.getView(this);
+		layout.addView(graph2View);
+		//layout.addView(graph2.getView(this));
+		
+		Thread thread = new Thread() {
+			public void run() {
+				for(long i = 0;; i+=3600 * 60) {
+					try {
+						Thread.sleep(2000);
+						//Thread.sleep(200);
+					}
+					catch(Exception e) {
+						Log.i("OOOI!", e.getMessage());
+					}
+					graph2.addNewPoint(new Date((long)1357654232 + i), 25 + (int)i / (3600 * 60), ContainersIncomingOutgoingGraph.LINE.INCOMING);
+					graph2.addNewPoint(new Date((long)1357654232 + i), 10 + (int)i / (3600 * 60), ContainersIncomingOutgoingGraph.LINE.OUTGOING);
+					graph2View.repaint();
+				}
+			}
+		};
+		thread.start();
 	}
 
 	@Override
