@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/connectionLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/con_hostname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/connection_string_hint"
+        android:text="@string/connection_string"
+        android:singleLine="true"
+        android:ems="10" >
+
+        <requestFocus />
+    </EditText>
+
+    <ToggleButton
+        android:id="@+id/toggleButton1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textOn="@string/connect_on"
+        android:textOff="@string/connect_off"
+        android:onClick="toggleConnection" />
+
+</LinearLayout>

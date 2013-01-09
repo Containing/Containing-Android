@@ -16,8 +16,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 import android.util.Log;
 import org.jeromq.*;
 import org.achartengine.*;
@@ -27,6 +30,9 @@ import com.containing.graph.ContainersIncomingOutgoingGraph;
 import com.containing.graph.LineGraph;
 import com.containing.graph.PieGraph;
 import com.containing.graph.StorageAreaGraph;
+import org.jeromq.*;
+
+import zmq.ZError;
 
 public class MainActivity extends FragmentActivity implements
 		ActionBar.TabListener {
@@ -41,6 +47,9 @@ public class MainActivity extends FragmentActivity implements
 	private StorageAreaGraph graphStorageArea = new StorageAreaGraph();
 	private GraphicalView graphContainersInOutView;
 	private GraphicalView graphStorageAreaView;
+	
+	private ZMQ.Context zmqContext = ZMQ.context(1);
+	private ZMQ.Socket subscriber;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -125,11 +134,19 @@ public class MainActivity extends FragmentActivity implements
 	public void onTabSelected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
 	
-		LinearLayout layout = (LinearLayout) findViewById(R.id.chartsLayout);
-		if(tab.getPosition() == 1)
-			layout.setVisibility(LinearLayout.GONE);
-		else
-			layout.setVisibility(LinearLayout.VISIBLE);
+		LinearLayout chartsLayout = (LinearLayout) findViewById(R.id.chartsLayout);
+		LinearLayout connectionLayout = (LinearLayout) findViewById(R.id.connectionLayout);
+		
+		switch(tab.getPosition()) {
+			case 0:
+				chartsLayout.setVisibility(LinearLayout.VISIBLE);
+				connectionLayout.setVisibility(LinearLayout.GONE);
+				break;
+			case 1:
+				chartsLayout.setVisibility(LinearLayout.GONE);
+				connectionLayout.setVisibility(LinearLayout.VISIBLE);
+				break;
+		}			
 	}
 
 	@Override
@@ -142,6 +159,42 @@ public class MainActivity extends FragmentActivity implements
 			FragmentTransaction fragmentTransaction) {
 	}
 
+	/**
+	 * Connect/Disconnect with controller
+	 * @param view
+	 */
+	public void toggleConnection(View view) {
+		boolean on = ((ToggleButton) view).isChecked();
+		Log.d("CONNECTION", on ? "connect" : "disconnect");
+
+		if(on) {
+			EditText con_hostname = (EditText) findViewById(R.id.con_hostname);
+			String connection_string = con_hostname.getText().toString();
+			Log.d("CONNECTION", connection_string);
+			if(connection_string.length() == 0) {
+				((ToggleButton) view).setChecked(!on);
+				Toast.makeText(getApplicationContext(), "Hostname should not be empty!", Toast.LENGTH_SHORT).show();
+				return;
+			}
+			
+			try {
+				subscriber = zmqContext.socket(ZMQ.SUB);
+				boolean success = subscriber.connect(connection_string);
+				if(!success)
+					throw new Exception("Failed to connect to " + connection_string);
+				subscriber.subscribe("stats");
+				Toast.makeText(getApplicationContext(), "Connection succeeded", Toast.LENGTH_SHORT).show();
+			}
+			catch(Exception e) {
+				Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+			}
+		}
+		else if(subscriber != null) {
+			subscriber.close();
+			Toast.makeText(getApplicationContext(), "Connection closed", Toast.LENGTH_SHORT).show();
+		}
+	}
+	
 	/**
 	 * A dummy fragment representing a section of the app, but that simply
 	 * displays dummy text.
