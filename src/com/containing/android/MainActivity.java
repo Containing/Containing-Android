@@ -45,11 +45,11 @@ public class MainActivity extends FragmentActivity implements
 	
 	volatile private ContainersIncomingOutgoingGraph graphContainersInOut = new ContainersIncomingOutgoingGraph();
 	volatile private StorageAreaGraph graphStorageArea = new StorageAreaGraph();
-	private GraphicalView graphContainersInOutView;
-	private GraphicalView graphStorageAreaView;
+	volatile private GraphicalView graphContainersInOutView;
+	volatile private GraphicalView graphStorageAreaView;
 	
 	private ZMQ.Context zmqContext = ZMQ.context(1);
-	private ZMQ.Socket subscriber;
+	volatile private ZMQ.Socket subscriber;
 	private Thread statsThread;
 
 	@Override
