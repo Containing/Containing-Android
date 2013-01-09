@@ -1,8 +1,14 @@
 package com.containing.android;
 
+import java.io.ByteArrayInputStream;
+import java.io.ObjectInputStream;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
+import Network.StatsMessage;
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -23,6 +29,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.util.Log;
 import org.jeromq.*;
+import org.jeromq.ZMQ.Msg;
 import org.achartengine.*;
 
 import com.containing.graph.BarGraph;
@@ -159,24 +166,51 @@ public class MainActivity extends FragmentActivity implements
 				statsThread = new Thread() {
 					public void run() {
 						try {
-							long i = 0;
 							while(!Thread.interrupted()) {
-								Random rnd = new Random();
-								Thread.sleep(2000);
-								i+=3600 * 6;
-								graphContainersInOut.addNewPoint(new Date((long)1357654232 + i), rnd.nextInt(50000), ContainersIncomingOutgoingGraph.LINE.INCOMING);
-								graphContainersInOut.addNewPoint(new Date((long)1357654232 + i), rnd.nextInt(10000), ContainersIncomingOutgoingGraph.LINE.OUTGOING);
-								graphContainersInOutView.repaint();
+								Thread.sleep(100);
 
-								String[] areas = {"Foo", "Bar", "Baz", "Foobar", "BarBaz"};
-								int[] areasv = {rnd.nextInt(50),rnd.nextInt(50),rnd.nextInt(50),rnd.nextInt(50),rnd.nextInt(50)};
+								StatsMessage msg = null;
+								byte[] data = subscriber.recv();
 								try {
-									graphStorageArea.addAreas(areas, areasv);
+									ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data));
+									msg = (StatsMessage) ois.readObject();
+									ois.close();
 								}
 								catch(Exception e) {
-									e.printStackTrace();
+									Log.d("ZMQ", "error: " + e.getMessage());
 								}
-								graphStorageAreaView.repaint();
+								
+								if(msg != null) {
+									Log.d("ZMQ", msg.toString());
+									// First graph
+									Date d = new Date();
+									graphContainersInOut.addNewPoint(d, (int)msg.containers_outgoing, ContainersIncomingOutgoingGraph.LINE.INCOMING);
+									graphContainersInOut.addNewPoint(d, (int)msg.containers_incoming, ContainersIncomingOutgoingGraph.LINE.OUTGOING);
+
+									// Second graph
+									Set set = msg.areas.entrySet();
+									Iterator it = set.iterator();
+									String[] areas = new String[set.size()];
+									Integer[] areasv = new Integer[set.size()];
+									int index = 0;
+									while(it.hasNext()) {
+										Map.Entry me = (Map.Entry)it.next();
+										areas[index] = (String)me.getKey();
+										areasv[index] = (Integer)me.getValue();
+										index++;
+									}
+
+									try {
+										graphStorageArea.addAreas(areas, areasv);
+									}
+									catch(Exception e) {
+										e.printStackTrace();
+									}
+									
+									// Redraw graphs
+									graphContainersInOutView.repaint();
+									graphStorageAreaView.repaint();
+								}
 							}
 						}
 						catch(InterruptedException e) {
@@ -209,7 +243,7 @@ public class MainActivity extends FragmentActivity implements
 		boolean success = subscriber.connect(connection_string);
 		if(!success)
 			throw new Exception("Failed to connect to " + connection_string);
-		subscriber.subscribe("stats");
+		subscriber.subscribe("");
 	}
 	
 	/**

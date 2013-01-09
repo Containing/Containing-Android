@@ -1,5 +1,6 @@
 package com.containing.graph;
 
+import java.util.List;
 import java.util.Random;
 
 import org.achartengine.ChartFactory;
@@ -65,7 +66,7 @@ public class StorageAreaGraph implements IGraph {
 	 * @param value
 	 * @throws Exception when name and value arrays don't match in length
 	 */
-	public void addAreas(String[] name, int[] value) throws Exception {
+	public void addAreas(String[] name, Integer[] value) throws Exception {
 		if(name.length != value.length)
 			throw new Exception("name[] and value[] don't match in length");
 		
