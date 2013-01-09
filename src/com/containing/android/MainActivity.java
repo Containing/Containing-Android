@@ -43,13 +43,14 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 	
-	private ContainersIncomingOutgoingGraph graphContainersInOut = new ContainersIncomingOutgoingGraph();
-	private StorageAreaGraph graphStorageArea = new StorageAreaGraph();
+	volatile private ContainersIncomingOutgoingGraph graphContainersInOut = new ContainersIncomingOutgoingGraph();
+	volatile private StorageAreaGraph graphStorageArea = new StorageAreaGraph();
 	private GraphicalView graphContainersInOutView;
 	private GraphicalView graphStorageAreaView;
 	
 	private ZMQ.Context zmqContext = ZMQ.context(1);
 	private ZMQ.Socket subscriber;
+	private Thread statsThread;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,35 +77,6 @@ public class MainActivity extends FragmentActivity implements
 		layout = (LinearLayout) findViewById(R.id.chartContainersStorageArea);
 		layout.addView(graphStorageAreaView);
 		// layout = (LinearLayout) findViewById(R.id.chartVehiclesAvailability);
-
-		Thread thread = new Thread() {
-			public void run() {
-				Random rnd = new Random();
-				for(long i = 0;; i+=3600 * 60) {
-					try {
-						Thread.sleep(2000);
-						//Thread.sleep(200);
-					}
-					catch(Exception e) {
-						e.printStackTrace();
-					}
-					graphContainersInOut.addNewPoint(new Date((long)1357654232 + i), rnd.nextInt(50000), ContainersIncomingOutgoingGraph.LINE.INCOMING);
-					graphContainersInOut.addNewPoint(new Date((long)1357654232 + i), rnd.nextInt(10000), ContainersIncomingOutgoingGraph.LINE.OUTGOING);
-					graphContainersInOutView.repaint();
-
-					String[] areas = {"Foo", "Bar", "Baz", "Foobar", "BarBaz"};
-					int[] areasv = {rnd.nextInt(50),rnd.nextInt(50),rnd.nextInt(50),rnd.nextInt(50),rnd.nextInt(50)};
-					try {
-						graphStorageArea.addAreas(areas, areasv);
-					}
-					catch(Exception e) {
-						e.printStackTrace();
-					}
-					graphStorageAreaView.repaint();
-				}
-			}
-		};
-		thread.start();
 	}
 
 	@Override
@@ -160,29 +132,60 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	/**
-	 * Connect/Disconnect with controller
+	 * Connect/Disconnect with controller when toggling the connect/disconnect button
+	 * and setups statsThread
 	 * @param view
 	 */
 	public void toggleConnection(View view) {
 		boolean on = ((ToggleButton) view).isChecked();
 		Log.d("CONNECTION", on ? "connect" : "disconnect");
 
+		if(statsThread != null)
+			statsThread.interrupt();
+		
 		if(on) {
 			EditText con_hostname = (EditText) findViewById(R.id.con_hostname);
 			String connection_string = con_hostname.getText().toString();
 			Log.d("CONNECTION", connection_string);
 			if(connection_string.length() == 0) {
 				((ToggleButton) view).setChecked(!on);
-				Toast.makeText(getApplicationContext(), "Hostname should not be empty!", Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), "Connection string should not be empty!", Toast.LENGTH_SHORT).show();
 				return;
 			}
 			
-			try {
-				subscriber = zmqContext.socket(ZMQ.SUB);
-				boolean success = subscriber.connect(connection_string);
-				if(!success)
-					throw new Exception("Failed to connect to " + connection_string);
-				subscriber.subscribe("stats");
+			try {				
+				setupConnection(connection_string);
+
+				statsThread = new Thread() {
+					public void run() {
+						try {
+							long i = 0;
+							while(!Thread.interrupted()) {
+								Random rnd = new Random();
+								Thread.sleep(2000);
+								i+=3600 * 6;
+								graphContainersInOut.addNewPoint(new Date((long)1357654232 + i), rnd.nextInt(50000), ContainersIncomingOutgoingGraph.LINE.INCOMING);
+								graphContainersInOut.addNewPoint(new Date((long)1357654232 + i), rnd.nextInt(10000), ContainersIncomingOutgoingGraph.LINE.OUTGOING);
+								graphContainersInOutView.repaint();
+
+								String[] areas = {"Foo", "Bar", "Baz", "Foobar", "BarBaz"};
+								int[] areasv = {rnd.nextInt(50),rnd.nextInt(50),rnd.nextInt(50),rnd.nextInt(50),rnd.nextInt(50)};
+								try {
+									graphStorageArea.addAreas(areas, areasv);
+								}
+								catch(Exception e) {
+									e.printStackTrace();
+								}
+								graphStorageAreaView.repaint();
+							}
+						}
+						catch(InterruptedException e) {
+							Thread.currentThread().interrupt();
+						}
+					}
+				};
+				statsThread.start();
+				
 				Toast.makeText(getApplicationContext(), "Connection succeeded", Toast.LENGTH_SHORT).show();
 			}
 			catch(Exception e) {
@@ -191,8 +194,22 @@ public class MainActivity extends FragmentActivity implements
 		}
 		else if(subscriber != null) {
 			subscriber.close();
+			subscriber = null;
 			Toast.makeText(getApplicationContext(), "Connection closed", Toast.LENGTH_SHORT).show();
 		}
+	}
+	
+	/**
+	 * Starts ZMQ connection
+	 * @param connection_string
+	 * @throws Exception
+	 */
+	private void setupConnection(String connection_string) throws Exception {
+		subscriber = zmqContext.socket(ZMQ.SUB);
+		boolean success = subscriber.connect(connection_string);
+		if(!success)
+			throw new Exception("Failed to connect to " + connection_string);
+		subscriber.subscribe("stats");
 	}
 	
 	/**
