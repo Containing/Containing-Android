@@ -171,7 +171,7 @@ public class MainActivity extends FragmentActivity implements
 
 								StatsMessage msg = null;
 								byte[] data = subscriber.recv(ZMQ.NOBLOCK);
-								if(data.length > 0) {
+								if(data != null && data.length > 0) {
 									try {
 										ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data));
 										msg = (StatsMessage) ois.readObject();
