@@ -55,7 +55,7 @@ public class MainActivity extends FragmentActivity implements
 	volatile private GraphicalView graphContainersInOutView;
 	volatile private GraphicalView graphStorageAreaView;
 	
-	private ZMQ.Context zmqContext = ZMQ.context(1);
+	final private ZMQ.Context zmqContext = ZMQ.context(1);
 	volatile private ZMQ.Socket subscriber;
 	private Thread statsThread;
 
