@@ -170,46 +170,48 @@ public class MainActivity extends FragmentActivity implements
 								Thread.sleep(100);
 
 								StatsMessage msg = null;
-								byte[] data = subscriber.recv();
-								try {
-									ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data));
-									msg = (StatsMessage) ois.readObject();
-									ois.close();
-								}
-								catch(Exception e) {
-									Log.d("ZMQ", "error: " + e.getMessage());
-								}
-								
-								if(msg != null) {
-									Log.d("ZMQ", msg.toString());
-									// First graph
-									Date d = new Date();
-									graphContainersInOut.addNewPoint(d, (int)msg.containers_outgoing, ContainersIncomingOutgoingGraph.LINE.INCOMING);
-									graphContainersInOut.addNewPoint(d, (int)msg.containers_incoming, ContainersIncomingOutgoingGraph.LINE.OUTGOING);
-
-									// Second graph
-									Set set = msg.areas.entrySet();
-									Iterator it = set.iterator();
-									String[] areas = new String[set.size()];
-									Integer[] areasv = new Integer[set.size()];
-									int index = 0;
-									while(it.hasNext()) {
-										Map.Entry me = (Map.Entry)it.next();
-										areas[index] = (String)me.getKey();
-										areasv[index] = (Integer)me.getValue();
-										index++;
-									}
-
+								byte[] data = subscriber.recv(ZMQ.NOBLOCK);
+								if(data.length > 0) {
 									try {
-										graphStorageArea.addAreas(areas, areasv);
+										ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data));
+										msg = (StatsMessage) ois.readObject();
+										ois.close();
 									}
 									catch(Exception e) {
-										e.printStackTrace();
+										Log.d("ZMQ", "error: " + e.getMessage());
 									}
 									
-									// Redraw graphs
-									graphContainersInOutView.repaint();
-									graphStorageAreaView.repaint();
+									if(msg != null) {
+										Log.d("ZMQ", msg.toString());
+										// First graph
+										Date d = new Date();
+										graphContainersInOut.addNewPoint(d, (int)msg.containers_outgoing, ContainersIncomingOutgoingGraph.LINE.INCOMING);
+										graphContainersInOut.addNewPoint(d, (int)msg.containers_incoming, ContainersIncomingOutgoingGraph.LINE.OUTGOING);
+	
+										// Second graph
+										Set set = msg.areas.entrySet();
+										Iterator it = set.iterator();
+										String[] areas = new String[set.size()];
+										Integer[] areasv = new Integer[set.size()];
+										int index = 0;
+										while(it.hasNext()) {
+											Map.Entry me = (Map.Entry)it.next();
+											areas[index] = (String)me.getKey();
+											areasv[index] = (Integer)me.getValue();
+											index++;
+										}
+	
+										try {
+											graphStorageArea.addAreas(areas, areasv);
+										}
+										catch(Exception e) {
+											e.printStackTrace();
+										}
+										
+										// Redraw graphs
+										graphContainersInOutView.repaint();
+										graphStorageAreaView.repaint();
+									}
 								}
 							}
 						}
