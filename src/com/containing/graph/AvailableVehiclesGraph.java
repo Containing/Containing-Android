@@ -38,6 +38,7 @@ public class AvailableVehiclesGraph implements IGraph {
 		mRenderer.setXTitle("Time");
 		mRenderer.setYTitle("Available");
 		mRenderer.setZoomEnabled(false);
+		mRenderer.setChartTitle("Available Vehicles");
 	}
 	
 	/**
