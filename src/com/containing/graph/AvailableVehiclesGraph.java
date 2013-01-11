@@ -29,7 +29,7 @@ public class AvailableVehiclesGraph implements IGraph {
 	private HashMap<String, TimeSeries> datasets = new HashMap<String, TimeSeries>();
 	private XYMultipleSeriesDataset mDataset = new XYMultipleSeriesDataset();	
 	private XYMultipleSeriesRenderer mRenderer = new XYMultipleSeriesRenderer();
-	Random rnd = new Random(2);
+	Random rnd = new Random(3);
 	
 	/**
 	 * Constructor
