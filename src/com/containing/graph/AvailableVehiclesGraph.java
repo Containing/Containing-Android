@@ -61,7 +61,6 @@ public class AvailableVehiclesGraph implements IGraph {
 		TimeSeries dataset = (TimeSeries)datasets.get(key);
 		
 		if(dataset == null) {
-			Log.w("AvailableVehiclesGraph", "Vehicle category " + key + " doesn't exist yet");
 			dataset = new TimeSeries(key);
 			datasets.put(key, dataset);
 			XYSeriesRenderer renderer = new XYSeriesRenderer();
@@ -74,7 +73,6 @@ public class AvailableVehiclesGraph implements IGraph {
 		
 		if(dataset != null) {
 			dataset.add(date, y);
-			Log.d("VEHICLES", "ADD");
 			if(dataset.getItemCount() > maxItems)
 				dataset.remove(0);
 		}
