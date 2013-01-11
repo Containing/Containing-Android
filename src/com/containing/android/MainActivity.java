@@ -32,7 +32,7 @@ import org.jeromq.*;
 import org.jeromq.ZMQ.Msg;
 import org.achartengine.*;
 
-import com.containing.graph.BarGraph;
+import com.containing.graph.AvailableVehiclesGraph;
 import com.containing.graph.ContainersIncomingOutgoingGraph;
 import com.containing.graph.StorageAreaGraph;
 import org.jeromq.*;
@@ -50,8 +50,10 @@ public class MainActivity extends FragmentActivity implements
 	
 	volatile private ContainersIncomingOutgoingGraph graphContainersInOut = new ContainersIncomingOutgoingGraph();
 	volatile private StorageAreaGraph graphStorageArea = new StorageAreaGraph();
+	volatile private AvailableVehiclesGraph graphVehicles = new AvailableVehiclesGraph();
 	volatile private GraphicalView graphContainersInOutView;
 	volatile private GraphicalView graphStorageAreaView;
+	volatile private GraphicalView graphVehiclesView;
 	
 	final private ZMQ.Context zmqContext = ZMQ.context(1);
 	volatile private ZMQ.Socket subscriber;
@@ -75,13 +77,16 @@ public class MainActivity extends FragmentActivity implements
 		
 		graphContainersInOutView = graphContainersInOut.getView(this);
 		graphStorageAreaView = graphStorageArea.getView(this);
+		graphVehiclesView = graphVehicles.getView(this);
 		
 		LinearLayout layout = (LinearLayout) findViewById(R.id.chartContainersInOut);
 		layout.addView(graphContainersInOutView);
 
 		layout = (LinearLayout) findViewById(R.id.chartContainersStorageArea);
 		layout.addView(graphStorageAreaView);
-		// layout = (LinearLayout) findViewById(R.id.chartVehiclesAvailability);
+		
+		layout = (LinearLayout) findViewById(R.id.chartVehiclesAvailability);
+		layout.addView(graphVehiclesView);
 	}
 
 	@Override
@@ -182,25 +187,20 @@ public class MainActivity extends FragmentActivity implements
 									if(msg != null) {
 										Log.d("ZMQ", msg.toString());
 										// First graph
-										Date d = new Date();
-										graphContainersInOut.addNewPoint(d, (int)msg.containers_outgoing, ContainersIncomingOutgoingGraph.LINE.INCOMING);
-										graphContainersInOut.addNewPoint(d, (int)msg.containers_incoming, ContainersIncomingOutgoingGraph.LINE.OUTGOING);
+										graphContainersInOut.addNewPoint(msg.date, (int)msg.containers_outgoing, ContainersIncomingOutgoingGraph.LINE.INCOMING);
+										graphContainersInOut.addNewPoint(msg.date, (int)msg.containers_incoming, ContainersIncomingOutgoingGraph.LINE.OUTGOING);
 	
 										// Second graph
-										Set set = msg.areas.entrySet();
-										Iterator it = set.iterator();
-										String[] areas = new String[set.size()];
-										Integer[] areasv = new Integer[set.size()];
-										int index = 0;
-										while(it.hasNext()) {
-											Map.Entry me = (Map.Entry)it.next();
-											areas[index] = (String)me.getKey();
-											areasv[index] = (Integer)me.getValue();
-											index++;
-										}
-	
 										try {
-											graphStorageArea.addAreas(areas, areasv);
+											graphStorageArea.addAreas(msg.getAreaKeys(), msg.getAreaValues());
+										}
+										catch(Exception e) {
+											e.printStackTrace();
+										}
+										
+										// Third graph
+										try {
+											 graphVehicles.addNewPoints(msg.getVehicleKeys(), msg.getVehicleValues(), msg.date);
 										}
 										catch(Exception e) {
 											e.printStackTrace();
@@ -209,6 +209,7 @@ public class MainActivity extends FragmentActivity implements
 										// Redraw graphs
 										graphContainersInOutView.repaint();
 										graphStorageAreaView.repaint();
+										graphVehiclesView.repaint();
 									}
 								}
 							}
