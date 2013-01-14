@@ -34,6 +34,7 @@ public class StorageAreaGraph implements IGraph {
 	 */
 	public StorageAreaGraph() {
 		renderer.setChartTitle("Container division across areas");
+		renderer.setShowLegend(false);
 	}
 	
 	/**
