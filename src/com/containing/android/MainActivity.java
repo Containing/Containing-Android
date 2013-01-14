@@ -221,7 +221,7 @@ public class MainActivity extends FragmentActivity implements
 				};
 				statsThread.start();
 				
-				Toast.makeText(getApplicationContext(), "Connection succeeded", Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), "Connection has been set up. Waiting for data", Toast.LENGTH_SHORT).show();
 			}
 			catch(Exception e) {
 				Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -243,7 +243,7 @@ public class MainActivity extends FragmentActivity implements
 		subscriber = zmqContext.socket(ZMQ.SUB);
 		boolean success = subscriber.connect(connection_string);
 		if(!success)
-			throw new Exception("Failed to connect to " + connection_string);
+			throw new Exception("Failed to setup connection to " + connection_string);
 		subscriber.subscribe("");
 	}
 	
