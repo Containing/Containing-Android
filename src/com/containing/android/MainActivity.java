@@ -187,8 +187,8 @@ public class MainActivity extends FragmentActivity implements
 									if(msg != null) {
 										Log.d("ZMQ", msg.toString());
 										// First graph
-										graphContainersInOut.addNewPoint(msg.date, (int)msg.containers_outgoing, ContainersIncomingOutgoingGraph.LINE.INCOMING);
-										graphContainersInOut.addNewPoint(msg.date, (int)msg.containers_incoming, ContainersIncomingOutgoingGraph.LINE.OUTGOING);
+										graphContainersInOut.addNewPoint(msg.date, (int)msg.containers_outgoing, ContainersIncomingOutgoingGraph.LINE.OUTGOING);
+										graphContainersInOut.addNewPoint(msg.date, (int)msg.containers_incoming, ContainersIncomingOutgoingGraph.LINE.INCOMING);
 	
 										// Second graph
 										try {
